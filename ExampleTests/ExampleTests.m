@@ -1,34 +1,67 @@
-//
-//  ExampleTests.m
-//  ExampleTests
-//
-//  Created by Tim on 13/05/14.
-//  Copyright (c) 2014 Charismatic Megafauna Ltd. All rights reserved.
-//
+#import "Kiwi.h"
 
-#import <XCTest/XCTest.h>
+#import "ViewController.h"
 
-@interface ExampleTests : XCTestCase
-
+@interface ViewController (ExampleTests)
+@property (nonatomic, weak) IBOutlet UILabel *textLabel;
+@property (nonatomic, weak) IBOutlet UIButton *changeButton;
+-(IBAction)didTapChangeButton:(id)sender;
 @end
 
-@implementation ExampleTests
+SPEC_BEGIN(ExampleTests)
 
-- (void)setUp
-{
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-}
+describe(@"When demonstrating the tests", ^{
+    
+    context(@"and instantiating the controller", ^{
+        
+        it(@"should instantiate the view controller", ^{
+            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            ViewController *vc = [mainStoryboard instantiateViewControllerWithIdentifier:@"ViewController"];
+            [[vc shouldNot] beNil];
+        });
+        
+    });
+    
+    context(@"and testing the user interface", ^{
+        
+        __block ViewController *vc = nil;
+        
+        beforeEach(^{
+            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+            vc = [mainStoryboard instantiateViewControllerWithIdentifier:@"ViewController"];
+            [[vc shouldNot] beNil];
+            [vc view];
+        });
+        
+        it(@"should have a UILabel outlet", ^{
+            [[vc.textLabel shouldNot] beNil];
+        });
+        
+        it(@"should display the correct text in the label when the view is loaded", ^{
+            [[vc.textLabel.text should] equal:@"The initial text"];
+        });
+        
+        it(@"should have a UIButton outlet", ^{
+            [[vc.changeButton shouldNot] beNil];
+        });
+        
+        it(@"should have the button linked to the didTapChangeButton action", ^{
+            NSArray *actionsArray = [vc.changeButton actionsForTarget:vc forControlEvent:UIControlEventTouchUpInside];
+            [[actionsArray shouldNot] beNil];
+            [[[actionsArray objectAtIndex:0] should] equal:@"didTapChangeButton:"];
+        });
+        
+        it(@"should change the text when the button is tapped", ^{
+            [vc didTapChangeButton:nil];
+            [[vc.textLabel.text should] equal:@"The final text"];
+        });
 
-- (void)tearDown
-{
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
+        afterEach(^{
+            vc = nil;
+        });
+        
+    });
+    
+});
 
-- (void)testExample
-{
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
-}
-
-@end
+SPEC_END
