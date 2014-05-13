@@ -55,6 +55,13 @@ describe(@"When demonstrating the tests", ^{
             [vc didTapChangeButton:nil];
             [[vc.textLabel.text should] equal:@"The final text"];
         });
+        
+        it(@"should toggle the text when the button is tapped", ^{
+            [vc didTapChangeButton:nil];
+            [[vc.textLabel.text should] equal:@"The final text"];
+            [vc didTapChangeButton:nil];
+            [[vc.textLabel.text should] equal:@"The initial text"];
+        });
 
         afterEach(^{
             vc = nil;

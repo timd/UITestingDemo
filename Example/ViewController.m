@@ -28,7 +28,11 @@
 }
 
 -(IBAction)didTapChangeButton:(id)sender {
-    [self.textLabel setText:@"The final text"];
+    if ([self.textLabel.text isEqualToString:@"The initial text"]) {
+        [self.textLabel setText:@"The final text"];
+    } else {
+        [self.textLabel setText:@"The initial text"];
+    }
 }
 
 @end
